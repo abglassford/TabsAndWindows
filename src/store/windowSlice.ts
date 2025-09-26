@@ -32,7 +32,13 @@ const windowSlice = createSlice({
         content,
         rowData
       };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.openWindows));
+
+      const openWindows = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({ ...openWindows, ...state.openWindows })
+      );
     },
     windowClosed: (state, action: PayloadAction<{ tabIndex: number }>) => {
       delete state.openWindows[action.payload.tabIndex];
