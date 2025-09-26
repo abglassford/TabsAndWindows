@@ -2,61 +2,57 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const STORAGE_KEY = 'openWindows';
 
-interface WindowInfo {
-  isOpen: boolean;
+interface WindowData {
+  tabIndex: number;
   content: string;
+  rowData?: any;
 }
 
-interface WindowState {
+export interface WindowState {
   openWindows: {
-    [key: number]: WindowInfo;
+    [key: number]: WindowData;
   };
 }
 
-// Load initial state from localStorage
 const loadInitialState = (): WindowState => {
   const stored = localStorage.getItem(STORAGE_KEY);
   return stored ? { openWindows: JSON.parse(stored) } : { openWindows: {} };
 };
 
-interface WindowOpenedPayload {
-  tabIndex: number;
-  content: string;
-}
+const initialState: WindowState = loadInitialState();
 
 const windowSlice = createSlice({
   name: 'windows',
-  initialState: loadInitialState(),
+  initialState,
   reducers: {
-    windowOpened: (state, action: PayloadAction<WindowOpenedPayload>) => {
-      const { tabIndex, content } = action.payload;
+    windowOpened: (state, action: PayloadAction<WindowData>) => {
+      const { tabIndex, content, rowData } = action.payload;
       state.openWindows[tabIndex] = {
-        isOpen: true,
+        tabIndex,
         content,
+        rowData
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state.openWindows));
     },
-    windowClosed: (state, action: PayloadAction<number>) => {
-      delete state.openWindows[action.payload];
+    windowClosed: (state, action: PayloadAction<{ tabIndex: number }>) => {
+      delete state.openWindows[action.payload.tabIndex];
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state.openWindows));
     },
     validateWindows: (state) => {
       const validWindows = { ...state.openWindows };
-      Object.keys(validWindows).forEach((index) => {
-        const numIndex = Number(index);
-        const windowRef = window.open('', `Tab${numIndex}`);
+      Object.keys(validWindows).forEach(tabIndex => {
+        const windowRef = window.open('', `Tab${tabIndex}`);
         if (!windowRef || windowRef.closed) {
-          delete validWindows[numIndex];
+          delete validWindows[Number(tabIndex)];
         } else {
           windowRef.focus();
         }
       });
       state.openWindows = validWindows;
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(validWindows));
-    },
-  },
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.openWindows));
+    }
+  }
 });
 
-export const { windowOpened, windowClosed, validateWindows } =
-  windowSlice.actions;
+export const { windowOpened, windowClosed, validateWindows } = windowSlice.actions;
 export default windowSlice.reducer;

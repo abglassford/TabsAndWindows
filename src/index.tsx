@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { CssBaseline } from '@mui/material';
-import { store } from '../store';
+import { store } from './store';
 import App from './App';
 
 const rootElement = document.getElementById('root');
@@ -18,6 +18,7 @@ root.render(
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/tab/:tabIndex" element={<App />} />
+        <Route path="/json/:tabIndex" element={<App />} />
       </Routes>
     </BrowserRouter>
   </Provider>

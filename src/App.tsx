@@ -1,15 +1,17 @@
 import { Box, Button, Tab, Tabs } from '@mui/material';
-import { updateForm } from '@store/formSlice';
+import { updateForm } from '@/store/formSlice';
 import {
   windowOpened,
   windowClosed,
   validateWindows,
-} from '../store/windowSlice';
+} from './store/windowSlice';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { RootState } from '../store';
+import { RootState } from './store';
 import TabForm from './components/TabForm';
+import JsonTable from './components/JsonTable';
+import JsonViewer from './components/JsonViewer';
 
 interface WindowMessage {
   type: 'WINDOW_CLOSED' | 'WINDOW_READY' | 'HYDRATE_CONTENT';
@@ -93,7 +95,7 @@ const App = () => {
 
         switch (event.data.type) {
           case 'WINDOW_CLOSED':
-            dispatch(windowClosed(event.data.tabIndex));
+            dispatch(windowClosed({ tabIndex: event.data.tabIndex }));
             break;
           case 'WINDOW_READY':
             if (event.source && event.data.tabIndex === currentTab) {
@@ -154,7 +156,17 @@ const App = () => {
     }
   };
 
-  return (
+  const { pathname } = window.location;
+  const isJsonView = pathname.startsWith('/json');
+
+  const sampleData = [
+    { id: 1, name: 'John Doe', email: 'john@example.com', role: 'Admin' },
+    { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'User' },
+  ];
+
+  return isJsonView ? (
+    <JsonViewer tabIndex={currentTab} />
+  ) : (
     <Box sx={{ width: '100%', p: 3 }}>
       <Tabs value={currentTab} onChange={handleTabChange}>
         {[...Array(5)].map((_, index) => (
@@ -169,12 +181,13 @@ const App = () => {
           variant="contained"
           onClick={() => handleOpenWindow(currentTab)}
           sx={{ mt: 2 }}
-          disabled={openWindows[currentTab]}
+          disabled={!!openWindows[currentTab]}
         >
           {openWindows[currentTab] ? 'Already Open' : 'Open in New Window'}
         </Button>
       )}
       <TabForm tabIndex={currentTab} />
+      <JsonTable data={sampleData} />
     </Box>
   );
 };

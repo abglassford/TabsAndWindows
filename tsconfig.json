@@ -19,17 +19,11 @@
     "paths": {
       "@/*": ["src/*"],
       "@components/*": ["src/components/*"],
-      "@store/*": ["store/*"]
+      "@store/*": ["src/store/*"]
     },
     "outDir": "./dist",
     "sourceMap": true
   },
-  "include": [
-    "src/**/*",
-    "store/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["src/**/*", "src/store/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

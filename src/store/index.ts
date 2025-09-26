@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import formReducer from './formSlice';
-import windowReducer from './windowSlice';
+import windowReducer, { WindowState } from './windowSlice';
 
 export interface RootState {
   forms: {
@@ -8,11 +8,7 @@ export interface RootState {
       content: string;
     }>;
   };
-  windows: {
-    openWindows: {
-      [key: number]: boolean;
-    };
-  };
+  windows: WindowState;
 }
 
 export const store = configureStore({

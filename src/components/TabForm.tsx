@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { TextField, Paper, Typography } from '@mui/material';
-import { updateForm } from '../../store/formSlice';
+import { updateForm } from '../store/formSlice';
 
 interface TabFormProps {
   tabIndex: number;
