@@ -121,7 +121,23 @@ const App = () => {
 
   const handleOpenWindow = (index: number) => {
     const url = `${window.location.origin}/tab/${index}`;
-    const windowFeatures = 'width=800,height=600,left=200,top=200';
+    const windowFeatures = [
+      'width=800',
+      'height=600',
+      'left=200',
+      'top=200',
+      'menubar=no',
+      'toolbar=no',
+      'titlebar=no',
+      'location=no',
+      'directories=no',
+      'status=no',
+      'scrollbars=yes',
+      'resizable=yes',
+      'chrome=no',
+      'dialog=yes',
+    ].join(',');
+
     const newWindow = window.open(
       url,
       `Tab${index}`,
